@@ -1,0 +1,32 @@
+machine:
+  services:
+    - docker
+  timezone:
+    UTC
+
+dependencies:
+  pre:
+    - sudo apt-get install -qq coreutils wget curl tar openssl xz-utils realpath
+    - docker info
+    - docker images -aq | xargs -r docker rmi -f
+    - docker images
+
+  override:
+    - ./prepare.sh
+    - docker build --no-cache --force-rm -t kampka/alpine-base:$CIRCLE_SHA1 .
+
+# Test are run as part of the build process
+test:
+  override:
+    # apk is working
+    - docker run -it --rm kampka/alpine-base:$CIRCLE_SHA1 "/sbin/apk update"
+    # no suid su
+    - docker run -it --rm --user=nobody kampka/alpine-base:$CIRCLE_SHA1 "/bin/su -c whoami" && exit 1 || exit 0
+
+deployment:
+  master:
+    branch: master
+    commands:
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASSWORD
+      - docker tag kampka/alpine-base:$CIRCLE_SHA1 kampka/alpine-base:latest
+      - docker push kampka/alpine-base:latest
