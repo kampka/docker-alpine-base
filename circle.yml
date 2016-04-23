@@ -24,9 +24,9 @@ test:
     - docker run -it --rm --user=nobody kampka/alpine-base:$CIRCLE_SHA1 "/bin/su -c whoami" && exit 1 || exit 0
 
 deployment:
-  master:
-    branch: master
+  v3.3:
+    branch: v3.3
     commands:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASSWORD
-      - docker tag kampka/alpine-base:$CIRCLE_SHA1 kampka/alpine-base:latest
-      - docker push kampka/alpine-base:latest
+      - docker tag kampka/alpine-base:$CIRCLE_SHA1 kampka/alpine-base:v3.3
+      - docker push kampka/alpine-base:v3.3
