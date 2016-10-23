@@ -13,7 +13,7 @@ dependencies:
     - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASSWORD
 
   override:
-    - ./configure --target-tag "3.3"
+    - ./configure
     - make
 
 # Test are run as part of the build process
@@ -25,4 +25,10 @@ deployment:
   v3.3:
     branch: v3.3
     commands:
+<<<<<<< HEAD
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASSWORD
+      - docker tag kampka/alpine-base:$CIRCLE_SHA1 kampka/alpine-base:v3.3
+      - docker push kampka/alpine-base:v3.3
+=======
       - make push
+>>>>>>> master

@@ -1,0 +1,77 @@
+#!/bin/sh
+
+set -e
+set -u
+
+work_dir="$(realpath $(dirname $0))"
+
+DOCKER_EXE=""
+DOCKER_NAMESPACE="${DOCKER_NAMESPACE:-kampka}"
+DOCKER_TARGET_TAG="${DOCKER_TAGET_TAG:-latest}"
+
+usage() {
+  echo "$0 [options]"
+  echo ""
+  echo "Options:"
+  echo "  --docker <path>:          Full path of the docker executable."
+  echo "  --namespace <namespace>:  The namespace of the docker image (default: $DOCKER_NAMESPACE)."
+  echo "  --target-tag <tag>:       The final target tag for the resulting docker image (default: $DOCKER_TARGET_TAG)."
+  echo "  --help:                   Print this message and exit."
+}
+
+while [ $# -gt 0 ]; do
+
+  case $1 in
+    -d | --docker)
+      shift
+      DOCKER_EXEC="$1"
+      ;;
+    -t | --target-tag)
+      shift
+      DOCKER_TARGET_TAG="$1"
+      ;;
+    -n | --namespace)
+      shift
+      DOCKER_NAMESPACE="$1"
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    * )
+      echo "Unknown option: $1" 1>&2
+      usage
+      exit 1
+      ;;
+    esac
+  shift
+done
+
+echo -n "Checking for docker executable... "
+
+if [ -z "$DOCKER_EXE" ]; then
+  if which docker >/dev/null ; then
+    DOCKER_EXE="$(which docker)"
+  fi
+fi
+if [ -z "$DOCKER_EXE" ] || [ ! -e "$DOCKER_EXE" ]; then
+  echo "not found"
+  exit 1
+fi
+echo "$DOCKER_EXE"
+
+echo ""
+echo "Configuration:"
+echo ""
+echo "  Docker executable: ${DOCKER_EXE}"
+echo ""
+echo "  Image namespace: ${DOCKER_NAMESPACE}"
+echo "  Image taget tag: ${DOCKER_TARGET_TAG}"
+
+for p_in in $(find . -name "*.in"); do
+    p=`echo $p_in | sed "s/.in$//g"`
+    sed '
+	s|{{DOCKER_EXE}}|'"$DOCKER_EXE"'|g
+	s|{{DOCKER_NAMESPACE}}|'"$DOCKER_NAMESPACE"'|g
+	s|{{DOCKER_TARGET_TAG}}|'"$DOCKER_TARGET_TAG"'|g' <$p_in >$p
+done

@@ -16,7 +16,7 @@ BUILD_DIR="$(mktemp -d -p $CURRENT_DIR alpine-XXXXXXXX)"
 VERBOSIRY="-q"
 
 ALPINE_RELEASE="${ALPINE_RELEASE:-latest-stable}"
-ALPINE_MIRROR="${ALPINE_MIRROR:-http://nl.alpinelinux.org}"
+ALPINE_MIRROR="${ALPINE_MIRROR:-http://dl-cdn.alpinelinux.org}"
 ALPINE_ARCH="x86_64"
 
 [ -e "$CURRENT_DIR/ALPINE_RELEASE" ] && ALPINE_RELEASE="$(cat $CURRENT_DIR/ALPINE_RELEASE)"
