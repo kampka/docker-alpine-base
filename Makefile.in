@@ -8,10 +8,11 @@ DOCKER_IMAGE_TAG="{{DOCKER_TARGET_TAG}}"
 DOCKER_IMAGE_NAME=alpine-base
 
 DOCKER_IMAGE=$(DOCKER_NAMESPACE)/$(DOCKER_IMAGE_NAME):$(GIT_HASH)
+TARGET_IMAGE=$(DOCKER_NAMESPACE)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)
 all: build
 
 push:
-	docker push $(DOCKER_IMAGE)
+	docker push $(TARGET_IMAGE)
 
 tag: image
 
@@ -26,7 +27,7 @@ test:
 build: image
 image: prepare
 	docker build --no-cache --force-rm -t $(DOCKER_IMAGE) .
-	docker tag $(DOCKER_IMAGE) $(DOCKER_NAMESPACE)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)
+	docker tag $(DOCKER_IMAGE) $(TARGET_IMAGE)
 
 prepare: alpine-base.tar.xz
 
@@ -39,6 +40,6 @@ clean:
 dist-clean: clean
 	rm -f Makefile
 	rm -f Dockerfile
-	docker rmi -f $(DOCKER_IMAGE) || true
+	docker rmi -f $(TARGET_IMAGE) || true
 
 .PHONY: clean prepare image push tag test all
