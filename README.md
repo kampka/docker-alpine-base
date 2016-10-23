@@ -7,7 +7,14 @@ This image provides a very minimal [Alpine Linux](https://www.alpinelinux.org) i
 that is intended to be used as a base to build more sophisticated containers upon.
 It contains little more that `busybox` and `apk`.
 
-This image builds from scratch using the `prepare.sh` script.
-Note that this script will only will only generate a root filesystem.
+Building
+-----------
+This image build is customizable using the `configure` script.
+To build the standard image, run:
 
-Afterwards, the usual ```docker build``` will produce the image.
+```
+$ ./configure
+$ make
+```
+
+For a customized build, see `configure --help`.
