@@ -16,7 +16,7 @@ This image build is customizable using the `configure` script.
 To build the standard image, run:
 
 ```
-$ ./configure
+$ ./configure --target-tag "3.3"
 $ make
 ```
 
