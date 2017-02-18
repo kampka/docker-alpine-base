@@ -13,7 +13,7 @@ dependencies:
     - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASSWORD
 
   override:
-    - ./configure
+    - ./configure --target-tag "3.5"
     - make
 
 # Test are run as part of the build process
@@ -22,7 +22,7 @@ test:
     - make test
 
 deployment:
-  master:
-    branch: master
+  v3.5:
+    branch: v3.5
     commands:
       - make push
