@@ -1,4 +1,4 @@
-SHELL=/bin/sh
+SHELL=/usr/bin/env sh
 
 GIT_HASH=$(shell git rev-parse HEAD)
 
