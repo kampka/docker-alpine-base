@@ -1,0 +1,27 @@
+
+version: 2
+jobs:
+  build:
+    machine: true
+    steps:
+    - checkout
+    - run:
+        command: 'sudo docker info >/dev/null 2>&1 || sudo service docker start; '
+    - run:
+        command: 'echo ''UTC'' | sudo tee -a /etc/timezone; sudo dpkg-reconfigure
+          -f noninteractive tzdata'
+
+
+    - run: sudo apt-get update
+    - run: sudo apt-get install -qq coreutils wget curl tar openssl xz-utils realpath
+    - run: docker info
+    - run: docker images -aq | xargs -r docker rmi -f
+    - run: docker images
+    - run: docker login  -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - run: ./configure
+    - run: make
+
+    - run: make test
+
+    - deploy:
+        command: make push
