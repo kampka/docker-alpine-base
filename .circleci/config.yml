@@ -18,7 +18,7 @@ jobs:
     - run: docker images -aq | xargs -r docker rmi -f
     - run: docker images
     - run: docker login  -u $DOCKER_USER -p $DOCKER_PASSWORD
-    - run: ./configure
+    - run: ./configure --target-tag "3.7"
     - run: make
 
     - run: make test
